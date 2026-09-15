@@ -1,0 +1,57 @@
+name: 🎯 ম্যানুয়াল APK বিল্ড (ওয়ার্কফ্লো ডিসপ্যাচ)
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'বিল্ড টাইপ নির্বাচন করুন'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+          - debug
+          - release
+      flavor:
+        description: 'ফ্লেভার নির্বাচন করুন'
+        required: true
+        default: 'standard'
+        type: choice
+        options:
+          - standard
+          - beta
+
+jobs:
+  manual-build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 কোড চেকআউট করুন
+      uses: actions/checkout@v3
+
+    - name: ☕ JDK 11 সেটআপ করুন
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+
+    - name: ✅ Gradle ক্যাশ চালু করুন
+      uses: gradle/gradle-build-action@v2
+
+    - name: 🔨 APK বিল্ড করুন
+      run: |
+        BUILD_TYPE="${{ github.event.inputs.build_type }}"
+        FLAVOR="${{ github.event.inputs.flavor }}"
+        FLAVOR_CAP=$(echo $FLAVOR | sed 's/\b\(.\)/\u\1/g')
+        ./gradlew assemble${FLAVOR_CAP}${BUILD_TYPE^}
+
+    - name: 📤 APK আপলোড করুন
+      uses: actions/upload-artifact@v3
+      with:
+        name: apk-${{ github.event.inputs.flavor }}-${{ github.event.inputs.build_type }}
+        path: app/build/outputs/apk/${{ github.event.inputs.flavor }}/${{ github.event.inputs.build_type }}/
+
+    - name: 📝 বিল্ড সামারি
+      run: |
+        echo "✅ ম্যানুয়াল বিল্ড সফল!"
+        echo "📦 ফ্লেভার: ${{ github.event.inputs.flavor }}"
+        echo "📦 বিল্ড টাইপ: ${{ github.event.inputs.build_type }}"
