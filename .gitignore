@@ -1,0 +1,38 @@
+# Gradle files
+.gradle/
+build/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+!gradlew
+!gradlew.bat
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Log/OS Files
+*.log
+.DS_Store
+
+# Android Studio generated files and folders
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+.idea/
+.gradle
+local.properties
+*.iml
+*.ipr
+*.iws
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/
