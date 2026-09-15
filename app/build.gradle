@@ -16,8 +16,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            minifyEnabled false
+            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         release {
             minifyEnabled false
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -30,6 +36,10 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    
+    packagingOptions {
+        exclude 'META-INF/proguard/androidx-*.pro'
+    }
 }
 
 dependencies {
@@ -38,9 +48,10 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
 
-    // 🔥 NETWORK LIBRARY (Latest OkHttp 4)
+    // Network Library
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation 'org.json:json:20231013'
     
+    // Testing
     testImplementation 'junit:junit:4.13.2'
 }
