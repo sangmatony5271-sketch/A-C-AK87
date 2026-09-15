@@ -1,0 +1,28 @@
+name: 📱 অটো APK বিল্ড (স্বয়ংক্রিয়)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+    - uses: gradle/gradle-build-action@v2
+    - run: ./gradlew assembleDebug
+    - run: ./gradlew assembleRelease
+    - uses: actions/upload-artifact@v3
+      with:
+        name: apk-debug
+        path: app/build/outputs/apk/standard/debug/
+    - uses: actions/upload-artifact@v3
+      with:
+        name: apk-release
+        path: app/build/outputs/apk/standard/release/
