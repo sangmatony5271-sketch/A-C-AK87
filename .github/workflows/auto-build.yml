@@ -1,40 +1,5 @@
-name: 📱 অটো APK বিল্ড (স্বয়ংক্রিয়)
-
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: 📥 কোড চেকআউট করুন
-      uses: actions/checkout@v4
-
-    - name: ☕ JDK 11 সেটআপ করুন
-      uses: actions/setup-java@v4
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-
-    - name: ✅ Gradle ক্যাশ চালু করুন
-      uses: gradle/gradle-build-action@v3
-
-    - name: 🔨 Debug APK বিল্ড করুন
-      run: chmod +x ./gradlew && ./gradlew assembleDebug
-
-    - name: 📦 Release APK বিল্ড করুন
-      run: ./gradlew assembleRelease
-
-    - name: 📤 APK আপলোড করুন (Debug)
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: apk-debug
-        path: app/build/outputs/apk/standard/debug/
+- name: 🔧 Fix gradlew line endings
+  run: sed -i 's/\r$//' ./gradlew && chmod +x ./gradlew        path: app/build/outputs/apk/standard/debug/
 
     - name: 📤 APK আপলোড করুন (Release)
       uses: actions/upload-artifact@v4
