@@ -9,20 +9,40 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-java@v4
+    - name: 📥 কোড চেকআউট করুন
+      uses: actions/checkout@v4
+
+    - name: ☕ JDK 11 সেটআপ করুন
+      uses: actions/setup-java@v4
       with:
         java-version: '11'
         distribution: 'temurin'
-    - uses: gradle/gradle-build-action@v2
-    - run: ./gradlew assembleDebug
-    - run: ./gradlew assembleRelease
-    - uses: actions/upload-artifact@v4
+
+    - name: ✅ Gradle ক্যাশ চালু করুন
+      uses: gradle/gradle-build-action@v3
+
+    - name: 🔨 Debug APK বিল্ড করুন
+      run: chmod +x ./gradlew && ./gradlew assembleDebug
+
+    - name: 📦 Release APK বিল্ড করুন
+      run: ./gradlew assembleRelease
+
+    - name: 📤 APK আপলোড করুন (Debug)
+      uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: apk-debug
         path: app/build/outputs/apk/standard/debug/
-    - uses: actions/upload-artifact@v4
+
+    - name: 📤 APK আপলোড করুন (Release)
+      uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: apk-release
         path: app/build/outputs/apk/standard/release/
+
+    - name: ✨ বিল্ড সফল হয়েছে
+      if: success()
+      run: echo "✅ APK বিল্ড সফলভাবে সম্পন্ন হয়েছে!"
